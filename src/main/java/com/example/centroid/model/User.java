@@ -1,4 +1,6 @@
-package com.example.centroid.Model;
+package com.example.centroid.model;
+
+import lombok.Data;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -6,10 +8,15 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 @Entity
-public class Conversation {
+@Data
+public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    Long id;
-    String conversationName;
-    //todo list of messages here
+    private Long id;
+    String username;
+    String password;
+    String firstName;
+    String lastName;
+    String email;
+
 }

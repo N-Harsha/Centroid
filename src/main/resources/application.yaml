@@ -1,3 +1,12 @@
 spring:
   h2:
     console.enabled: true
+  datasource:
+    url: jdbc:h2:mem:temp;DB_CLOSE_DELAY=-1
+
+centroid:
+  app:
+    jwtSecret: centroidSecretKey
+    jwtExpirationSeconds: 1296000
+    refreshExpiryDays: 30
+
