@@ -20,6 +20,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
 import java.util.regex.Pattern;
 
 @Service
@@ -129,7 +130,7 @@ public class UserService {
         user.setPassword(encoder.encode(signUpFormDTO.getPassword()));
         final User registeredUser = userRepository.save(user);
         logger.info("new user {} has been created",registeredUser.getId());
-        return ResponseEntity.status(HttpStatus.OK)
+        return ResponseEntity.status(HttpStatus.CREATED)
                 .body(ApiSuccess.builder().message(SuccessEnum.USER_REGISTRATION_SUCCESSFUL.getMessage()).build());
     }
 
@@ -149,5 +150,9 @@ public class UserService {
         final String refreshToken = userSessionService.createUserSession(user);
         logger.info("User : {} logging in to the application", user.getId());
         return new UserSignInResponseDTO(jwtToken,refreshToken,userDetails.getUsername(),user.getFirstName(),user.getLastName());
+    }
+
+    public Optional<User> getUserById(Long id){
+        return userRepository.findById(id);
     }
 }

@@ -13,7 +13,11 @@ public enum ErrorEnum {
     INVALID_FIRST_NAME("the invalid first name, please enter a valid first name", "ERR109"),
     INVALID_LAST_NAME("the invalid last name, please enter a valid last name", "ERR110"),
     INVALID_EMAIL("the invalid email, please enter a valid email", "ERR111"),
-    USER_SESSION_CREATION_FAILED("Unable to create user session while logging", "ERR112");
+    USER_SESSION_CREATION_FAILED("Unable to create user session while logging", "ERR112"),
+    INVALID_USER_REQUEST("User request is not possible", "ERR113"),
+    USER_REQUEST_NOT_FOUND("User request is not present", "ERR114"),
+    UNAUTHORIZED_USER_REQUEST_UPDATE("user is not authorized to update this user request", "ERR115"),
+    USER_REQUEST_ALREADY_UPDATED("user request is no longer has pending status", "ERR116");
     private final String message;
     private final String code;
 

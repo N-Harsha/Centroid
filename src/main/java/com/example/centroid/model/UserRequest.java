@@ -7,19 +7,18 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Data
 @Builder
-public class GroupMember {
+@Data
+public class UserRequest {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     Long id;
-    LocalDateTime joinDate;
-    LocalDateTime leftDate;
+    @OneToOne
+    User sender;
     @ManyToOne
-    User user;
-    @ManyToOne
-    Conversation conversation;
-
-    String conversationName;
-
+    User receiver;
+    LocalDateTime creationDateTime;
+    LocalDateTime modificationDateTime;
+    @OneToOne
+    UserRequestStatus userRequestStatus;
 }
