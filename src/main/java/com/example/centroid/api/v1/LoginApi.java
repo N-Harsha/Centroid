@@ -3,6 +3,7 @@ package com.example.centroid.api.v1;
 import com.example.centroid.exceptions.CustomException;
 import com.example.centroid.jwt.JWTUtils;
 import com.example.centroid.model.Dto.ApiError;
+import com.example.centroid.model.Dto.SignUpFormDTO;
 import com.example.centroid.model.Dto.UserSignInResponseDTO;
 import com.example.centroid.model.Dto.UserSignInRequestDTO;
 import com.example.centroid.service.UserDetailsServiceImpl;
@@ -13,6 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -56,6 +58,11 @@ public class LoginApi {
             throw new CustomException(errorResponse);
         }
         return userService.getUserSignInResponseDTO(userSignInRequestDTO.getUsername(),authentication);
+    }
+
+    @PostMapping("/sign-registration")
+    public ResponseEntity<Object> userRegistration(@RequestBody SignUpFormDTO signUpFormDTO)throws CustomException{
+        
     }
 
 
