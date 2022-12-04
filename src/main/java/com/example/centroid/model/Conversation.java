@@ -15,6 +15,5 @@ public class Conversation {
     Long id;
 
     @OneToMany(mappedBy = "conversation")
-    @Builder.Default
-    List<Message> messages=new ArrayList<>();
+    List<Message> messages;
 }
