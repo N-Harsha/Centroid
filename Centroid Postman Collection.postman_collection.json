@@ -1,0 +1,105 @@
+{
+	"info": {
+		"_postman_id": "7a800a56-ff3a-4633-b965-c22089122d69",
+		"name": "Centroid Postman Collection",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "User Registration.",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": " { \"username\":\"Jack123\",\n    \"firstName\":\"Jackson\",\n    \"lastName\":\"Williamson\",\n    \"email\":\"jack@gmail.com\",\n    \"verifyEmail\":\"jack@gmail.com\",\n    \"password\":\"Password@1\",\n    \"verifyPassword\":\"Password@1\"}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8090/api/auth/user-registration",
+					"host": [
+						"localhost"
+					],
+					"port": "8090",
+					"path": [
+						"api",
+						"auth",
+						"user-registration"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "User login",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"username\": \"harsha\",\n    \"password\": \"Password@1\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8090/api/auth/login",
+					"host": [
+						"localhost"
+					],
+					"port": "8090",
+					"path": [
+						"api",
+						"auth",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Send User Request",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJoYXJzaGEiLCJpYXQiOjE2NzAxODQzMjMsImV4cCI6MTY3MTUwMDEyM30.9chaH9ep4Dn3JB1ef7IkjDqN2Xo5yWafnXIW31e4M4z_H8GXQ6Kr9m8F_gmdZMIVXkyZyXvYLlAWkc9IJ0mAsg",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "session",
+						"value": "ff583d5e-0281-4c61-ab72-c1c439f71485",
+						"type": "default"
+					}
+				],
+				"url": {
+					"raw": "localhost:8090/api/v1/user-request/send/8",
+					"host": [
+						"localhost"
+					],
+					"port": "8090",
+					"path": [
+						"api",
+						"v1",
+						"user-request",
+						"send",
+						"8"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
