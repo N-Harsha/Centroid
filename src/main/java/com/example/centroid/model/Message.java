@@ -1,9 +1,14 @@
 package com.example.centroid.model;
 
+import lombok.Builder;
+import lombok.Data;
+
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
+@Data
+@Builder
 public class Message {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

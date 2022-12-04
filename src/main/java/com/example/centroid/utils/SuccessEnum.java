@@ -6,7 +6,8 @@ public enum SuccessEnum {
     USER_REQUEST_ACCEPTED_SUCCESSFULLY("User Request accepted successful"),
     USER_REQUEST_REJECTED_SUCCESSFULLY("User Request rejected successful"),
     USER_REQUEST_CANCELED_SUCCESSFULLY("User Request canceled successful"),
-    USER_REQUEST_SENT_SUCCESSFULLY("User Request sent successfully");
+    USER_REQUEST_SENT_SUCCESSFULLY("User Request sent successfully"),
+    Message_SENT_SUCCUSFULLY("User Message sent successfully");
     private final String message;
 
     SuccessEnum(String message) {
