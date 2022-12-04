@@ -12,7 +12,8 @@ public enum ErrorEnum {
     INVALID_PASSWORD("the invalid password, please enter a valid password", "ERR108"),
     INVALID_FIRST_NAME("the invalid first name, please enter a valid first name", "ERR109"),
     INVALID_LAST_NAME("the invalid last name, please enter a valid last name", "ERR110"),
-    USER_SESSION_CREATION_FAILED("Unable to create user session while logging", "ERR111");
+    INVALID_EMAIL("the invalid email, please enter a valid email", "ERR111"),
+    USER_SESSION_CREATION_FAILED("Unable to create user session while logging", "ERR112");
     private final String message;
     private final String code;
 

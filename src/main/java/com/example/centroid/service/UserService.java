@@ -41,12 +41,31 @@ public class UserService {
     private void validateSignUpDTO(SignUpFormDTO signUpFormDTO) throws CustomException{
         final String USERNAME_PATTERN =
                 "^[a-zA-Z0-9]([._](?![._])|[a-zA-Z0-9]){3,18}[a-zA-Z0-9]$";
-        final String PASSWORD_PATTERN =
-                "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&-+=()])(?=\\S+$).{8,20}$";
-        final  String NAME_PATTERN = "/^[a-z ,.'-]+$/i";
+        //username contains A-Z , a-z and 0-9 and ._ and nothing else.
+        //username cannot start or end with . or _
+        //username cannot have the username cannot contain __ or ._ or _. within it.
+        //min 5 chars long.
+        //max 20 chars long.
+
+
+        final String PASSWORD_PATTERN = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&-+=()])(?=\\S+$).{8,20}$";
+        //min 8 chars long and max 20 chars
+        //should contain A-Z, a-z, 0-9 and special characters.
+        //todo let the regex allow only limited special characters.
+
+        final  String NAME_PATTERN = "^[\\p{L} .'-]+$";
+        //\\p{L} is a Unicode Character Property that matches any kind of letter from any language
+
+        final String EMAIL_PATTERN = "^(.+)@(.+)$";
+        //can have anything and should contain @ in then middle and then some string.
+
+
        final Pattern usernamePattern = Pattern.compile(USERNAME_PATTERN);
        final Pattern passwordPattern = Pattern.compile(PASSWORD_PATTERN);
        final Pattern namePattern = Pattern.compile(NAME_PATTERN);
+       final Pattern emailPattern = Pattern.compile(EMAIL_PATTERN);
+
+       //todo write a regex for email. and write a condition.
 
         if(!signUpFormDTO.getEmail().equals(signUpFormDTO.getVerifyEmail())){
             ApiError errorResponse = new ApiError(HttpStatus.BAD_REQUEST,ErrorEnum.VERIFY_EMAIL_MISMATCH.getMessage(),ErrorEnum.VERIFY_EMAIL_MISMATCH.getCode(), null);
@@ -64,6 +83,10 @@ public class UserService {
         }
         if(!passwordPattern.matcher(signUpFormDTO.getPassword()).matches()){
             ApiError errorResponse = new ApiError(HttpStatus.BAD_REQUEST,ErrorEnum.INVALID_PASSWORD.getMessage(),ErrorEnum.INVALID_PASSWORD.getCode(), null);
+            throw new CustomException(errorResponse);
+        }
+        if(!emailPattern.matcher(signUpFormDTO.getEmail()).matches()){
+            ApiError errorResponse = new ApiError(HttpStatus.BAD_REQUEST,ErrorEnum.INVALID_EMAIL.getMessage(),ErrorEnum.INVALID_EMAIL.getCode(), null);
             throw new CustomException(errorResponse);
         }
         if(!namePattern.matcher(signUpFormDTO.getFirstName()).matches()){

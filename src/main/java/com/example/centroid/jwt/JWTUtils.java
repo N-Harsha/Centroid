@@ -34,7 +34,7 @@ public class JWTUtils {
                 .setSubject((userPrinciple.getUsername()))
                 .setIssuedAt(new Date())
                 .setExpiration(Date.from(zonedIST.plusSeconds(jwtExpirationMs).toInstant()))
-                .signWith(SignatureAlgorithm.ES512,jwtSecret)
+                .signWith(SignatureAlgorithm.HS512,jwtSecret)
                 .compact();
     }
 

@@ -60,9 +60,9 @@ public class LoginApi {
         return userService.getUserSignInResponseDTO(userSignInRequestDTO.getUsername(),authentication);
     }
 
-    @PostMapping("/sign-registration")
+    @PostMapping("/user-registration")
     public ResponseEntity<Object> userRegistration(@RequestBody SignUpFormDTO signUpFormDTO)throws CustomException{
-        
+        return userService.userRegistration(signUpFormDTO);
     }
 
 

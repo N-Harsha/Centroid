@@ -13,7 +13,7 @@ public class DateTimeUtils {
     public static ZonedDateTime dateTimeInIST(){
         LocalDateTime localNow = LocalDateTime.now();
         ZonedDateTime zonedUTC = localNow.atZone(ZoneId.of("UTC"));
-        ZonedDateTime zonedIST = zonedUTC.withZoneSameInstant(ZoneId.of("Asia/kolkata"));
+        ZonedDateTime zonedIST = zonedUTC.withZoneSameInstant(ZoneId.of("Asia/Kolkata"));
         return zonedIST;
     }
 }
