@@ -2,17 +2,20 @@ package com.example.centroid.service;
 
 import com.example.centroid.exceptions.CustomException;
 import com.example.centroid.jwt.JWTUtils;
-import com.example.centroid.model.Dto.ApiError;
-import com.example.centroid.model.Dto.ApiSuccess;
-import com.example.centroid.model.Dto.SignUpFormDTO;
-import com.example.centroid.model.Dto.UserSignInResponseDTO;
+import com.example.centroid.mapper.UserMapper;
+import com.example.centroid.model.Dto.*;
 import com.example.centroid.model.User;
+import com.example.centroid.model.UserSession;
 import com.example.centroid.repository.UserRepository;
 import com.example.centroid.utils.ErrorEnum;
 import com.example.centroid.utils.SuccessEnum;
+import lombok.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -38,6 +41,10 @@ public class UserService {
 
     @Autowired
     PasswordEncoder encoder;
+
+    @Autowired
+    private UserMapper userMapper;
+
 
     private void validateSignUpDTO(SignUpFormDTO signUpFormDTO) throws CustomException{
         final String USERNAME_PATTERN =
@@ -150,6 +157,17 @@ public class UserService {
         final String refreshToken = userSessionService.createUserSession(user);
         logger.info("User : {} logging in to the application", user.getId());
         return new UserSignInResponseDTO(jwtToken,refreshToken,userDetails.getUsername(),user.getFirstName(),user.getLastName());
+    }
+
+    public Page<UserDTO> findUsersByQuery(@NonNull final String sessionId, @NonNull final String query,
+                                          final Pageable pageable){
+        final UserSession fetchedSession = userSessionService.findUserSessionBySessionId(sessionId);
+        final User user = fetchedSession.getUser();
+        logger.info("findUsersByQuery is invoked by User : {} with query : {}",user.getId(),query);
+        Page<User> userPage = userRepository.findDistinctUsersByUsername(query,pageable);
+        logger.info("fetched {} users by findUsersByQuery by user: {} with query: {}",userPage.getContent().size(), user.getId(), query);
+        return new PageImpl<UserDTO>(userMapper.usersToUserDTOs(userPage.getContent()), pageable,
+                userPage.getTotalElements());
     }
 
     public Optional<User> getUserById(Long id){
