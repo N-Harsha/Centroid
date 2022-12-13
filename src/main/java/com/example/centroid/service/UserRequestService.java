@@ -18,7 +18,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.time.LocalDateTime;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -41,7 +43,7 @@ public class UserRequestService {
 
     @Autowired
     GroupMemberService groupMemberService;
-
+    @Transactional
     public ResponseEntity<Object> sendUserRequest(@NonNull final String sessionId, final Long id){
         final UserSession fetchedSession = userSessionService.findUserSessionBySessionId(sessionId);
         final User user = fetchedSession.getUser();
@@ -69,6 +71,7 @@ public class UserRequestService {
         return ResponseEntity.status(HttpStatus.OK).body(ApiSuccess.builder().message(SuccessEnum.USER_REQUEST_SENT_SUCCESSFULLY.getMessage()).build());
     }
 
+    @Transactional
     public ResponseEntity<Object> acceptUserRequest(@NonNull final String sessionId,final Long id) {
         final UserSession fetchedUserSession = userSessionService.findUserSessionBySessionId(sessionId);
         final User user = fetchedUserSession.getUser();
@@ -89,15 +92,15 @@ public class UserRequestService {
             throw new CustomException(errorResponse);
         }
 
-        if(!userRequest.getUserRequestStatus().equals(Constants.USER_REQUEST_PENDING)){
+        if(!userRequest.getUserRequestStatus().getStatus().equals(Constants.USER_REQUEST_PENDING)){
             logger.info("User {} tried to be update User Request {} which is already {}",id,user.getId(),userRequest.getUserRequestStatus());
             ApiError errorResponse = new ApiError(HttpStatus.FORBIDDEN,ErrorEnum.USER_REQUEST_ALREADY_UPDATED.getMessage(),
                     ErrorEnum.USER_REQUEST_ALREADY_UPDATED.getCode(),null);
             throw new CustomException(errorResponse);
         }
 
-        UserRequestStatus rejectedUserRequestStatus = userRequestStatusRepository.findByStatus(Constants.USER_REQUEST_ACCEPTED).get();
-        userRequest.setUserRequestStatus(rejectedUserRequestStatus);
+        UserRequestStatus acceptedUserRequestStatus = userRequestStatusRepository.findByStatus(Constants.USER_REQUEST_ACCEPTED).get();
+        userRequest.setUserRequestStatus(acceptedUserRequestStatus);
         userRequest.setModificationDateTime(LocalDateTime.now());
         userRequestRepository.save(userRequest);
         logger.info("User Request {} accepted Successfully",id);
@@ -125,14 +128,14 @@ public class UserRequestService {
         }
         UserRequest userRequest = possibleUserRequest.get();
 
-        if(userRequest.getReceiver().getId()!=user.getId()){
+        if(!Objects.equals(userRequest.getReceiver().getId(), user.getId())){
             logger.info("User {} tried to be update User Request {}",id,user.getId());
             ApiError errorResponse = new ApiError(HttpStatus.UNAUTHORIZED,ErrorEnum.UNAUTHORIZED_USER_REQUEST_UPDATE.getMessage(),
                     ErrorEnum.UNAUTHORIZED_USER_REQUEST_UPDATE.getCode(),null);
             throw new CustomException(errorResponse);
         }
 
-        if(!userRequest.getUserRequestStatus().equals(Constants.USER_REQUEST_PENDING)){
+        if(!userRequest.getUserRequestStatus().getStatus().equals(Constants.USER_REQUEST_PENDING)){
             logger.info("User {} tried to be update User Request {} which is already {}",id,user.getId(),userRequest.getUserRequestStatus());
             ApiError errorResponse = new ApiError(HttpStatus.FORBIDDEN,ErrorEnum.USER_REQUEST_ALREADY_UPDATED.getMessage(),
                     ErrorEnum.USER_REQUEST_ALREADY_UPDATED.getCode(),null);
@@ -160,14 +163,14 @@ public class UserRequestService {
         }
         UserRequest userRequest = possibleUserRequest.get();
 
-        if(userRequest.getSender().getId()!=user.getId()){
+        if(!Objects.equals(userRequest.getSender().getId(), user.getId())){
             logger.info("User {} tried to be update User Request {}",id,user.getId());
             ApiError errorResponse = new ApiError(HttpStatus.UNAUTHORIZED,ErrorEnum.UNAUTHORIZED_USER_REQUEST_UPDATE.getMessage(),
                     ErrorEnum.UNAUTHORIZED_USER_REQUEST_UPDATE.getCode(),null);
             throw new CustomException(errorResponse);
         }
 
-        if(!userRequest.getUserRequestStatus().equals(Constants.USER_REQUEST_PENDING)){
+        if(!userRequest.getUserRequestStatus().getStatus().equals(Constants.USER_REQUEST_PENDING)){
             logger.info("User {} tried to be update User Request {} which is already {}",id,user.getId(),userRequest.getUserRequestStatus());
             ApiError errorResponse = new ApiError(HttpStatus.FORBIDDEN,ErrorEnum.USER_REQUEST_ALREADY_UPDATED.getMessage(),
                     ErrorEnum.USER_REQUEST_ALREADY_UPDATED.getCode(),null);

@@ -23,7 +23,6 @@ public class GroupMember {
     User user;
     @ManyToOne
     Conversation conversation;
-
     String conversationName;
 
 }

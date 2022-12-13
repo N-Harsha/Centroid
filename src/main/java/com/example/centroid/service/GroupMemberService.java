@@ -27,11 +27,11 @@ public class GroupMemberService {
         User sender = userRequest.getSender();
         User receiver = userRequest.getReceiver();
         GroupMember groupMemberSender =  groupMemberRepository.save(GroupMember.builder().user(sender).joinDate(LocalDateTime.now())
-                .conversationName(receiver.getUsername()).conversation(conversation).leftDate(LocalDateTime.MAX).build());
+                .conversationName(receiver.getUsername()).conversation(conversation).leftDate(null).build());
         logger.info("group member for userRequest sender has been created, id : {}",groupMemberSender.getId());
 
         GroupMember groupMemberReceiver =  groupMemberRepository.save(GroupMember.builder().user(receiver).joinDate(LocalDateTime.now())
-                .conversationName(sender.getUsername()).conversation(conversation).leftDate(LocalDateTime.MAX).build());
+                .conversationName(sender.getUsername()).conversation(conversation).leftDate(null).build());
 
         logger.info("group member for userRequest receiver has been created, id : {}",groupMemberReceiver.getId());
     }

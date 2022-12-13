@@ -42,7 +42,7 @@ public class MessageService{
         //todo do this latter.
     }
 
-    public ResponseEntity<Object> sendMessage(@NotNull final String sessionId, final Long id, final MessageDTO messageDTO){
+    public Message sendMessage(@NotNull final String sessionId, final Long id, final MessageDTO messageDTO){
         UserSession fetchedUserSession = userSessionService.findUserSessionBySessionId(sessionId);
         User user = fetchedUserSession.getUser();
         Optional<Conversation> possibleConversation = conversationRepository.findById(id);
@@ -66,8 +66,7 @@ public class MessageService{
                 .conversation(conversation).fromUser(user).sentDateTime(LocalDateTime.now()).build();
         Message savedMessage =  messageRepository.save(message);
         logger.info("message {}  has been saved by the user {}",savedMessage.getId(),user.getId());
-        return ResponseEntity.status(HttpStatus.CREATED).body(ApiSuccess.builder().
-                message(SuccessEnum.Message_SENT_SUCCUSFULLY.getMessage()).build());
+        return savedMessage;
     }
 
 }

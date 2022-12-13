@@ -18,4 +18,5 @@ public class UserApi {
             @RequestParam(name = "query",required = false) String query, Pageable pageable){
         return userService.findUsersByQuery(sessionId,query,pageable);
     }
+
 }

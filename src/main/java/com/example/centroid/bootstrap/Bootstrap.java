@@ -14,8 +14,8 @@ import org.springframework.stereotype.Component;
 import java.util.ArrayList;
 import java.util.List;
 
-@Component
-public class Bootstrap implements CommandLineRunner {
+//@Component
+public class Bootstrap  {
     private final Logger logger = LoggerFactory.getLogger(Bootstrap.class);
     @Autowired
     private UserRequestStatusRepository userRequestStatusRepository;
@@ -23,18 +23,19 @@ public class Bootstrap implements CommandLineRunner {
     @Autowired
     private UserService userService;
 
-    @Override
-    public void run(String... args) throws Exception {
-        logger.info("BootStrap class has been initiated...");
-        List<UserRequestStatus> userRequestStatusList = new ArrayList<>();
-        userRequestStatusList.add(UserRequestStatus.builder().status(Constants.USER_REQUEST_PENDING).build());
-        userRequestStatusList.add(UserRequestStatus.builder().status(Constants.USER_REQUEST_ACCEPTED).build());
-        userRequestStatusList.add(UserRequestStatus.builder().status(Constants.USER_REQUEST_REJECTED).build());
-        userRequestStatusRepository.saveAll(userRequestStatusList);
-
-        userService.userRegistration(SignUpFormDTO.builder().firstName("Harsha").lastName("Nimmala")
-                .email("harsha0770@gmail.com").verifyEmail("harsha0770@gmail.com").password("Password@1").verifyPassword("Password@1").username("harsha").build());
-        userService.userRegistration(SignUpFormDTO.builder().firstName("Kushal").lastName("Nimmala")
-                .email("kushal0770@gmail.com").verifyEmail("kushal0770@gmail.com").password("Password@1").verifyPassword("Password@1").username("kushal").build());
-    }
+//    @Override
+//    public void run(String... args) throws Exception {
+//        logger.info("BootStrap class has been initiated...");
+//        List<UserRequestStatus> userRequestStatusList = new ArrayList<>();
+//        userRequestStatusList.add(UserRequestStatus.builder().status(Constants.USER_REQUEST_PENDING).build());
+//        userRequestStatusList.add(UserRequestStatus.builder().status(Constants.USER_REQUEST_ACCEPTED).build());
+//        userRequestStatusList.add(UserRequestStatus.builder().status(Constants.USER_REQUEST_REJECTED).build());
+//        userRequestStatusList.add(UserRequestStatus.builder().status(Constants.USER_REQUEST_CANCELLED).build());
+//        userRequestStatusRepository.saveAll(userRequestStatusList);
+//
+//        userService.userRegistration(SignUpFormDTO.builder().firstName("Harsha").lastName("Nimmala")
+//                .email("harsha0770@gmail.com").verifyEmail("harsha0770@gmail.com").password("Password@1").verifyPassword("Password@1").username("harsha").build());
+//        userService.userRegistration(SignUpFormDTO.builder().firstName("Kushal").lastName("Nimmala")
+//                .email("kushal0770@gmail.com").verifyEmail("kushal0770@gmail.com").password("Password@1").verifyPassword("Password@1").username("kushal").build());
+//    }
 }

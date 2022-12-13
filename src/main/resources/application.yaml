@@ -1,8 +1,14 @@
 spring:
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
   h2:
     console.enabled: true
   datasource:
-    url: jdbc:h2:mem:temp;DB_CLOSE_DELAY=-1
+    url: jdbc:mysql://192.168.0.145:3306/centroid
+    username: admin
+    password: Admin@123
 
 server:
   port: 8090
