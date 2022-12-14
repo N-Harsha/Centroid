@@ -15,7 +15,7 @@ public class UserApi {
     @GetMapping("/search")
     public Page<UserDTO> findUsersByQuery(
             @RequestHeader("session") String sessionId,
-            @RequestParam(name = "query",required = false) String query, Pageable pageable){
+            @RequestParam(name = "query",required = false,defaultValue = "") String query, Pageable pageable){
         return userService.findUsersByQuery(sessionId,query,pageable);
     }
 

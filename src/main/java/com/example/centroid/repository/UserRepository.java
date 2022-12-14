@@ -5,6 +5,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.query.Param;
 
 import java.util.Optional;
 
@@ -16,5 +17,5 @@ public interface UserRepository extends CrudRepository<User,Long> {
     Boolean existsByEmail(String email);
 
     @Query("select user from User user where upper(user.username) like CONCAT('%',upper(:query),'%') ")
-    Page<User> findDistinctUsersByUsername(String query, Pageable pageable);
+    Page<User> findDistinctUsersByUsername(@Param("query") String query, Pageable pageable);
 }
