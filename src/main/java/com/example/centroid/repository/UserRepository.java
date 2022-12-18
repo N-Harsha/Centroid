@@ -16,6 +16,7 @@ public interface UserRepository extends CrudRepository<User,Long> {
 
     Boolean existsByEmail(String email);
 
-    @Query("select user from User user where upper(user.username) like CONCAT('%',upper(:query),'%') ")
+    @Query("select user from User user where upper(user.username) like CONCAT('%',upper(:query),'%')")
     Page<User> findDistinctUsersByUsername(@Param("query") String query, Pageable pageable);
+    Page<User> findAllByUsernameStartingWithAndIdNot(String query,Long id,Pageable pageable);
 }

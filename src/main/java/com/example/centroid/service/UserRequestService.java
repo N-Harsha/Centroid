@@ -2,9 +2,11 @@ package com.example.centroid.service;
 
 import com.example.centroid.constants.Constants;
 import com.example.centroid.exceptions.CustomException;
+import com.example.centroid.mapper.UserRequestMapper;
 import com.example.centroid.model.*;
 import com.example.centroid.model.Dto.ApiError;
 import com.example.centroid.model.Dto.ApiSuccess;
+import com.example.centroid.model.Dto.UserRequestDTO;
 import com.example.centroid.repository.ConversationRepository;
 import com.example.centroid.repository.UserRequestRepository;
 import com.example.centroid.repository.UserRequestStatusRepository;
@@ -20,6 +22,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -43,6 +46,10 @@ public class UserRequestService {
 
     @Autowired
     GroupMemberService groupMemberService;
+
+    @Autowired
+    UserRequestMapper userRequestMapper;
+
     @Transactional
     public ResponseEntity<Object> sendUserRequest(@NonNull final String sessionId, final Long id){
         final UserSession fetchedSession = userSessionService.findUserSessionBySessionId(sessionId);
@@ -64,6 +71,27 @@ public class UserRequestService {
             throw new CustomException(errorResponse);
         }
         User receiver = possibleReceiver.get();
+        Optional<UserRequest> existingRequestPending = userRequestRepository.findAllBySenderAndReceiverAndUserRequestStatus(user,receiver,userRequestStatusRepository.findByStatus(Constants.USER_REQUEST_PENDING).get());
+        if(existingRequestPending.isPresent()){
+            logger.info("A request already exists between sender : {} and receiver : {}",user.getId(),id);
+            ApiError errorResponse = new ApiError(HttpStatus.BAD_REQUEST, ErrorEnum.USER_REQUEST_IN_PENDING_STATUS.getMessage(),
+                    ErrorEnum.USER_REQUEST_IN_PENDING_STATUS.getCode(),null);
+            throw new CustomException(errorResponse);
+        }
+        Optional<UserRequest> existingRequestAccepted = userRequestRepository.findAllBySenderAndReceiverAndUserRequestStatus(user,receiver,userRequestStatusRepository.findByStatus(Constants.USER_REQUEST_ACCEPTED).get());
+        if(existingRequestAccepted.isPresent()){
+            logger.info(" sender : {} and receiver : {} are already friends",user.getId(),id);
+            ApiError errorResponse = new ApiError(HttpStatus.BAD_REQUEST, ErrorEnum.USER_REQUEST_IN_Accepted_STATUS.getMessage(),
+                    ErrorEnum.USER_REQUEST_IN_Accepted_STATUS.getCode(),null);
+            throw new CustomException(errorResponse);
+        }
+        existingRequestAccepted = userRequestRepository.findAllBySenderAndReceiverAndUserRequestStatus(receiver,user,userRequestStatusRepository.findByStatus(Constants.USER_REQUEST_ACCEPTED).get());
+        if(existingRequestAccepted.isPresent()){
+            logger.info(" sender : {} and receiver : {} are already friends",user.getId(),id);
+            ApiError errorResponse = new ApiError(HttpStatus.BAD_REQUEST, ErrorEnum.USER_REQUEST_IN_Accepted_STATUS.getMessage(),
+                    ErrorEnum.USER_REQUEST_IN_Accepted_STATUS.getCode(),null);
+            throw new CustomException(errorResponse);
+        }
         UserRequest userRequest = UserRequest.builder().sender(user).receiver(receiver)
                 .userRequestStatus(pendingUserRequestStatus).creationDateTime(LocalDateTime.now()).modificationDateTime(LocalDateTime.now()).build();
         UserRequest savedUserRequest = userRequestRepository.save(userRequest);
@@ -183,6 +211,23 @@ public class UserRequestService {
         userRequestRepository.save(userRequest);
         logger.info("User Request {} cancelled Successfully",id);
         return ResponseEntity.status(HttpStatus.OK).body(ApiSuccess.builder().message(SuccessEnum.USER_REQUEST_CANCELED_SUCCESSFULLY.getMessage()).build());
+    }
+
+    public List<UserRequestDTO> sentUserRequests(String sessionId){
+        final UserSession fetchedUserSession = userSessionService.findUserSessionBySessionId(sessionId);
+        final User user = fetchedUserSession.getUser();
+        logger.info("fetching the user request sent by the user : {}",user.getId());
+        List<UserRequest> userRequestsSent = userRequestRepository.findAllBySenderAndUserRequestStatus(user,userRequestStatusRepository.findByStatus(Constants.USER_REQUEST_PENDING).get());
+        logger.info("{} requests sent by user : {}",userRequestsSent.size(),user.getId());
+        return userRequestMapper.usersToUserDTOs(userRequestsSent);
+    }
+    public List<UserRequestDTO> receivedUserRequests(String sessionId){
+        final UserSession fetchedUserSession = userSessionService.findUserSessionBySessionId(sessionId);
+        final User user = fetchedUserSession.getUser();
+        logger.info("fetching the user request received by the user : {}",user.getId());
+        List<UserRequest> userRequestsReceived = userRequestRepository.findAllByReceiverAndUserRequestStatus(user,userRequestStatusRepository.findByStatus(Constants.USER_REQUEST_PENDING).get());
+        logger.info("{} requests sent by user : {}",userRequestsReceived.size(),user.getId());
+        return userRequestMapper.usersToUserDTOs(userRequestsReceived);
     }
 
 }

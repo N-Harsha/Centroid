@@ -6,6 +6,9 @@ import com.example.centroid.model.Dto.ApiError;
 import com.example.centroid.model.Dto.SignUpFormDTO;
 import com.example.centroid.model.Dto.UserSignInResponseDTO;
 import com.example.centroid.model.Dto.UserSignInRequestDTO;
+import com.example.centroid.model.User;
+import com.example.centroid.model.UserSession;
+import com.example.centroid.service.UserDetailsImpl;
 import com.example.centroid.service.UserDetailsServiceImpl;
 import com.example.centroid.service.UserService;
 import com.example.centroid.service.UserSessionService;
@@ -19,10 +22,9 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Date;
 
 @RestController
 @RequestMapping("api/auth")
@@ -65,6 +67,33 @@ public class LoginApi {
         return userService.userRegistration(signUpFormDTO);
     }
 
+
+   @PutMapping("/refresh")
+    public UserSignInResponseDTO refreshSession(
+            @RequestHeader("session") String session)
+            throws CustomException {
+        final UserSession fetchedSession = userSessionService.findUserSessionBySessionId(session);
+        final User user = fetchedSession.getUser();
+
+        if (fetchedSession.getSessionExpiry().compareTo(new Date()) < 0) {
+            logger.warn("Deleting expired session : {} for user : {}", fetchedSession.getSessionId(), user.getId());
+            final ApiError errorResponse = new ApiError(HttpStatus.UNAUTHORIZED,
+                    ErrorEnum.USER_SESSION_EXPIRED.getMessage(),
+                    ErrorEnum.USER_SESSION_EXPIRED.getCode(), null);
+            throw new CustomException(errorResponse);
+        }
+        final UserDetailsImpl userDetails = userDetailsService
+                .getUserByUsername(fetchedSession.getUser().getUsername());
+
+        userSessionService.updateUserSessionExpiry(fetchedSession);
+        final UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails,
+                null, userDetails.getAuthorities());
+        String jwtToken = jwtUtils.generateJwtToken(authentication);
+        logger.info("Refreshing access token for user : {}", user.getId());
+        return new UserSignInResponseDTO(jwtToken,
+                fetchedSession.getSessionId(),
+                userDetails.getUsername(),user.getFirstName(),user.getLastName());
+    }
 
 
 }

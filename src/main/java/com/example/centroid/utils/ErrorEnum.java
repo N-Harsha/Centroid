@@ -19,7 +19,10 @@ public enum ErrorEnum {
     UNAUTHORIZED_USER_REQUEST_UPDATE("user is not authorized to update this user request", "ERR115"),
     USER_REQUEST_ALREADY_UPDATED("user request is no longer has pending status", "ERR116"),
     USER_NOT_MEMBER_OF_CONVERSATION("user is not a member of Conversation", "ERR117"),
-    CONVERSATION_DOSE_NOT_EXIST("conversation does not exist", "ERR118" );
+    CONVERSATION_DOSE_NOT_EXIST("conversation does not exist", "ERR118" ),
+    USER_REQUEST_IN_PENDING_STATUS("User request is in pending status","ERR119"),
+    USER_REQUEST_IN_Accepted_STATUS("Already friends...","ERR120");
+
     private final String message;
     private final String code;
 

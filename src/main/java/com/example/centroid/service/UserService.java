@@ -164,7 +164,8 @@ public class UserService {
         final UserSession fetchedSession = userSessionService.findUserSessionBySessionId(sessionId);
         final User user = fetchedSession.getUser();
         logger.info("findUsersByQuery is invoked by User : {} with query : {}",user.getId(),query);
-        Page<User> userPage = userRepository.findDistinctUsersByUsername(query,pageable);
+//        Page<User> userPage = userRepository.findDistinctUsersByUsername(query,pageable,user.getId());
+        Page<User> userPage = userRepository.findAllByUsernameStartingWithAndIdNot(query,user.getId(),pageable);
         logger.info("fetched {} users by findUsersByQuery by user: {} with query: {}",userPage.getContent().size(), user.getId(), query);
         return new PageImpl<UserDTO>(userMapper.usersToUserDTOs(userPage.getContent()), pageable,
                 userPage.getTotalElements());

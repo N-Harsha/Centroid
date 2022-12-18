@@ -18,7 +18,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
 
     @Transactional
-//    @Cacheable(value = "userDetilsImpl",key = "#username")
+//    @Cacheable(value = "userDetailsImpl",key = "#username")
     public UserDetailsImpl getUserByUsername(String username) throws UsernameNotFoundException {
         User user = userRepository.findUserByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("user Not Found with username : "+username));
