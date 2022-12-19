@@ -14,6 +14,8 @@ public class Conversation {
     @GeneratedValue(strategy = GenerationType.AUTO)
     Long id;
 
+//    boolean isGroup=false;
+
     @OneToMany(mappedBy = "conversation")
     List<Message> messages;
 }

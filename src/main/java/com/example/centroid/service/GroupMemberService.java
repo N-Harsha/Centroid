@@ -1,9 +1,7 @@
 package com.example.centroid.service;
 
-import com.example.centroid.model.Conversation;
-import com.example.centroid.model.GroupMember;
-import com.example.centroid.model.User;
-import com.example.centroid.model.UserRequest;
+import com.example.centroid.model.*;
+import com.example.centroid.model.Dto.ConversationDTO;
 import com.example.centroid.repository.ConversationRepository;
 import com.example.centroid.repository.GroupMemberRepository;
 import org.slf4j.Logger;
@@ -12,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -22,6 +21,8 @@ public class GroupMemberService {
 
     @Autowired
     ConversationRepository conversationRepository;
+    @Autowired
+    UserSessionService userSessionService;
 
     public void resolveUserRequest(final UserRequest userRequest, final Conversation conversation){
         User sender = userRequest.getSender();
@@ -42,7 +43,12 @@ public class GroupMemberService {
             return false;
         return true;
     }
-
-
+    public List<ConversationDTO> getAllConversations(String sessionId){
+        final UserSession fetchedUserSession = userSessionService.findUserSessionBySessionId(sessionId);
+        final User user = fetchedUserSession.getUser();
+        logger.info("fetching all the conversations for the user : {}",user.getId());
+        final List<GroupMember> userGroups = groupMemberRepository.findAllByUserAndLeftDate(user,null);
+        logger.info("fetched {} userGroups for the user : {}",userGroups.size(),user.getId());
+    }
 
 }

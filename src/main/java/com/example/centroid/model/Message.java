@@ -20,4 +20,5 @@ public class Message {
     @ManyToOne
     @JoinColumn(name = "conversation_id",nullable = false)
     Conversation conversation;
+    //todo after the messaging is working add the message status.
 }

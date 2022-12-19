@@ -23,7 +23,7 @@ public interface UserRequestMapper {
     UserRequestDTO userRequestToUserRequestDTO(UserRequest userRequest);
     default List<UserRequestDTO> usersToUserDTOs(List<UserRequest> userRequests) {
         return !userRequests.isEmpty()
-                ? userRequests.stream().map(m -> userRequestToUserRequestDTO(m)).collect(Collectors.toList())
+                ? userRequests.stream().map(this::userRequestToUserRequestDTO).collect(Collectors.toList())
                 : Collections.emptyList();
     }
     @Named("senderUsernameFromUserRequest")
