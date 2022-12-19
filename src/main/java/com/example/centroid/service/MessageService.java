@@ -1,6 +1,7 @@
 package com.example.centroid.service;
 
 import com.example.centroid.exceptions.CustomException;
+import com.example.centroid.mapper.MessageMapper;
 import com.example.centroid.model.Conversation;
 import com.example.centroid.model.Dto.ApiError;
 import com.example.centroid.model.Dto.ApiSuccess;
@@ -21,6 +22,7 @@ import org.springframework.stereotype.Service;
 
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -37,6 +39,9 @@ public class MessageService{
 
     @Autowired
     MessageRepository messageRepository;
+
+    @Autowired
+    MessageMapper messageMapper;
 
     public void validateMessageDTO(MessageDTO messageDTO){
         //todo do this latter.
@@ -69,4 +74,9 @@ public class MessageService{
         return savedMessage;
     }
 
+    public List<MessageDTO> findMessages(String sessionId, Long conversationId) {
+        //todo add the sorting and paging.
+        List<Message> messages = messageRepository.findAllByConversation_Id(conversationId);
+        return messageMapper.messagesToMessageDTOs(messages);
+    }
 }

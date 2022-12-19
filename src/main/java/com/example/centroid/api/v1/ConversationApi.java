@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("api/conversation")
+@RequestMapping("api/v1/conversation")
 public class ConversationApi {
 
     @Autowired

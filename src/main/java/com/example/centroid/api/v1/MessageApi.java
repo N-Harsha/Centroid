@@ -14,6 +14,8 @@ import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 public class MessageApi {
 
@@ -34,6 +36,10 @@ public class MessageApi {
         //conversation/conv-id/private -- listen on.
         return ResponseEntity.status(HttpStatus.CREATED).body(ApiSuccess.builder().
                 message(SuccessEnum.Message_SENT_SUCCUSFULLY.getMessage()).build());
+    }
+
+    public List<MessageDTO> fetchMessages(@Header("session") String sessionId,@Header("conversationId") Long id){
+        messageService.findMessages(sessionId,id);
     }
 
 }
