@@ -1,5 +1,6 @@
 package com.example.centroid.service;
 
+import com.example.centroid.mapper.ConversationMapper;
 import com.example.centroid.model.*;
 import com.example.centroid.model.Dto.ConversationDTO;
 import com.example.centroid.repository.ConversationRepository;
@@ -23,6 +24,9 @@ public class GroupMemberService {
     ConversationRepository conversationRepository;
     @Autowired
     UserSessionService userSessionService;
+
+    @Autowired
+    ConversationMapper conversationMapper;
 
     public void resolveUserRequest(final UserRequest userRequest, final Conversation conversation){
         User sender = userRequest.getSender();
@@ -49,6 +53,7 @@ public class GroupMemberService {
         logger.info("fetching all the conversations for the user : {}",user.getId());
         final List<GroupMember> userGroups = groupMemberRepository.findAllByUserAndLeftDate(user,null);
         logger.info("fetched {} userGroups for the user : {}",userGroups.size(),user.getId());
+        return conversationMapper.groupMembersToConversationDTOs(userGroups);
     }
 
 }
