@@ -1,5 +1,6 @@
 package com.example.centroid.api.v1;
 
+import com.example.centroid.mapper.MessageMapper;
 import com.example.centroid.model.Dto.ApiSuccess;
 import com.example.centroid.model.Dto.MessageDTO;
 import com.example.centroid.model.Message;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+@RequestMapping("/api/v1/message")
 public class MessageApi {
 
     @Autowired
@@ -25,21 +27,24 @@ public class MessageApi {
     @Autowired
     SimpMessagingTemplate simpMessagingTemplate;
 
-    @MessageMapping("/send")
-    public ResponseEntity<Object> sendMessage(@Header("session") String sessionId,
-                                              @Header("conversationId") Long id,
-                                              @Payload MessageDTO messageDTO){
+    @Autowired
+    MessageMapper messageMapper;
+
+    @PostMapping("/send/{id}")
+    public ResponseEntity<Object> sendMessage(@RequestHeader("session") String sessionId,
+                                              @PathVariable(name = "id",required = true) Long id,
+                                              @RequestBody MessageDTO messageDTO){
         Message message = messageService.sendMessage(sessionId,id,messageDTO);
 
-        simpMessagingTemplate.convertAndSendToUser(message.getConversation().getId().toString(),
-                                            "/private",message);
-        //conversation/conv-id/private -- listen on.
+        simpMessagingTemplate.convertAndSend("/conversation/"+id,messageMapper.messageToMessageDTO(message));
+
         return ResponseEntity.status(HttpStatus.CREATED).body(ApiSuccess.builder().
                 message(SuccessEnum.Message_SENT_SUCCUSFULLY.getMessage()).build());
     }
 
-    public List<MessageDTO> fetchMessages(@Header("session") String sessionId,@Header("conversationId") Long id){
-        messageService.findMessages(sessionId,id);
+    @GetMapping("/fetch/{id}")
+    public List<MessageDTO> fetchMessages(@RequestHeader("session") String sessionId,@PathVariable("id") Long id){
+        return messageService.findMessages(sessionId,id);
     }
 
 }

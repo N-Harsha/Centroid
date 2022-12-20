@@ -19,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
@@ -47,6 +48,7 @@ public class MessageService{
         //todo do this latter.
     }
 
+    @Transactional
     public Message sendMessage(@NotNull final String sessionId, final Long id, final MessageDTO messageDTO){
         UserSession fetchedUserSession = userSessionService.findUserSessionBySessionId(sessionId);
         User user = fetchedUserSession.getUser();
@@ -76,7 +78,7 @@ public class MessageService{
 
     public List<MessageDTO> findMessages(String sessionId, Long conversationId) {
         //todo add the sorting and paging.
-        List<Message> messages = messageRepository.findAllByConversation_Id(conversationId);
+        List<Message> messages = conversationRepository.findById(conversationId).get().getMessages();
         return messageMapper.messagesToMessageDTOs(messages);
     }
 }
