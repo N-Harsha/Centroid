@@ -4,7 +4,6 @@ import com.example.centroid.exceptions.CustomException;
 import com.example.centroid.mapper.MessageMapper;
 import com.example.centroid.model.Conversation;
 import com.example.centroid.model.Dto.ApiError;
-import com.example.centroid.model.Dto.ApiSuccess;
 import com.example.centroid.model.Dto.MessageDTO;
 import com.example.centroid.model.Message;
 import com.example.centroid.model.User;
@@ -12,12 +11,12 @@ import com.example.centroid.model.UserSession;
 import com.example.centroid.repository.ConversationRepository;
 import com.example.centroid.repository.MessageRepository;
 import com.example.centroid.utils.ErrorEnum;
-import com.example.centroid.utils.SuccessEnum;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
